@@ -1,3 +1,3 @@
 venv
-test_spark_streaming.ipynb
+plugins/test_spark_streaming.ipynb
 /__pycache__
