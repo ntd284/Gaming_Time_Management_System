@@ -1,1 +1,0 @@
-# VNG-Assignment

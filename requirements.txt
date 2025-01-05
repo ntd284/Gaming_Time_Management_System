@@ -1,7 +1,0 @@
-kafka
-kafka-python-ng
-pyspark
-redis
-fastapi
-uvicorn
-cassandra-driver
