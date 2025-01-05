@@ -48,7 +48,6 @@ services:
     volumes:
       - kafka1_data:/var/lib/kafka/data
 
-
   kafka2:
     image: confluentinc/cp-kafka
     restart: "no"
@@ -100,7 +99,6 @@ services:
       - clickhouse_data:/bitnami/clickhouse
     networks:
       - vng-assign-network
-
 
   spark-master:
     image: bitnami/spark:latest
