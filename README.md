@@ -9,6 +9,13 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 ![architecture](images/0_architecture.png)
 
+### The reason for choosing this architecture is to ensure:
+- Horizontal Scalability: **Kafka**, **Spark**, **Cassandra**, and **Redis** can be scaled horizontally to handle large volumes of data.
+- Data Durability: **Cassandra** provides high availability and durability for raw data storage.
+- High Availability: **Redis** provides fast read access to processed data for real-time enforcement.
+- Fast Processing: **Spark** Streaming processes events in real-time to calculate gaming time.
+- Fast Data Access: **FastAPI** exposes gaming session data via an API for real-time enforcement to fetch result from Redis directly.
+
 ## Main Requirements:
 **Time Window**
 - The playing time is calculated within a strict 24-hour window.
