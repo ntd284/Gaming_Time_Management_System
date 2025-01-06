@@ -56,28 +56,32 @@ Check in Docker-desktop:
 
 4. Install the required libraries:
 ```
-pip install -r requirements.txt
+pip install -r requirements.txt 
 ```
 5. Run the project:
 ```
-cd plugins
-python3 produce_kafka.py # Fetch and produce events
-python3 spark_streaming.py # Consume and process events
-uvicorn fetch_api:app # Activate API app
+cd plugins                          # Access to plugins folder
+python3 produce_kafka.py            # Fetch and produce events
+python3 spark_streaming.py          # Consume and process events
+uvicorn fetch_api:app               # Activate API app
 ```
-6. Check raw data in Cassandra database:
+6. Activate cronjob to reset the gaming time for all users at the beginning of a new day:
 ```
-docker exec -it cassandra cqlsh -u cassandra -p cassandra localhost 9042
-SELECT * FROM spark_streams.created_users;
+crontab cronfile
 ```
-7. Check processed data in Redis:
+7. Check raw data in Cassandra database:
 ```
-docker exec -it redis redis-cli
-KEYS *
-HGETALL total_playing_time:{user_id}
-HGETALL specific_playing_time:{user_id}:{game_id}
+docker exec -it cassandra cqlsh -u cassandra -p cassandra localhost 9042    # Access to Cassandra
+SELECT * FROM spark_streams.created_users;                                  # List all created users
 ```
-8. Test the API using postman or browser:
+8. Check processed data in Redis:
+```
+docker exec -it redis redis-cli                     # Access to Redis
+KEYS *                                              # List all keys
+HGETALL total_playing_time:{user_id}                # Get total playing time data
+HGETALL specific_playing_time:{user_id}:{game_id}   # Get specific playing time data
+```
+9. Test the API using postman or browser:
 ```
 GET http://localhost:8000/total_playing_time/user_id={user_id}                          #Total playing time
 GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_id}     #Specific playing time
