@@ -54,10 +54,16 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 - **Consumer:** Consumes events from the message queue using Spark Streaming.
 - **Event Schema:** The schema of the event data is as follows:
-    - `user_id`: Unique identifier of the user.
-    - `game_id`: Unique identifier of the game.
-    - `event_time`: Timestamp of the event.
-    - **Raw Data:** Stores raw data in Cassandra for backup and historical analysis.
+```
+[{
+    "user_id": "user_1", //Unique identifier of the user.
+    "role_id": "role_1", //Unique identifier of the role.
+    "game_id": "game_1", //Unique identifier of the game.
+    "event_time": "2021-09-01T12:34:12.003" //Timestamp of the event.
+}]
+```
+- **Raw Data:** Stores raw data in Cassandra for backup and historical analysis.
+
 <p align="center">
   <img src="./images/2_1_Cassandra.png" alt="lal", width=500>
 </p>
@@ -126,17 +132,17 @@ The architecture captures, processes, and exposes gaming session data via an API
         .start()
 ```
 **Output:**
-- List of all events in Redis
+- List of all events saved in **Redis**
 <p align="center">
-    <img src="./images/2_5_total_events.png" alt="lal", width=500>
+    <img src="./images/2_5_total_events.png" alt="lal", width=800>
 </p>
 
-- users with their total playing time
+- users with their total playing time saved in **Redis**
 <p align="center">
     <img src="./images/2_6_totalplayingtime.png" alt="lal", width=500>
 </p>
 
-- Users and games with their specific playing time
+- Users and games with their specific playing time saved in **Redis**
 <p align="center">
     <img src="./images/2_7_playingtime.png" alt="lal", width=500>
 </p>
