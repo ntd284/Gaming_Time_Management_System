@@ -18,7 +18,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 **Calculation Logic**
 
 -   **Event Collection:**
-    -User events are captured in real-time with minute-level granularity to ensure accuracy.
+    - User events are captured in real-time with minute-level granularity to ensure accuracy.
 - **Online Time Calculation:**
     - The system calculates distinct active minutes per user across all games.
     - Duplicate or overlapping minutes are ignored to prevent inflated results.
