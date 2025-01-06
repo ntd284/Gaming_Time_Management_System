@@ -253,3 +253,12 @@ query_total_time_df = total_time_df.writeStream \
 0 0 * * * python3 plugins/flushdb.py >> logs/cronjob.log 2>&1
 ```
 
+### Conclusion:
+
+- Strengths of the Current System:
+    - Scalable Architecture: Kafka, Spark, and Redis are horizontally scalable.
+    - Low Latency: Redis ensures sub-500ms latency for API queries.
+    - Real-time Aggregation: Spark Streaming efficiently processes distinct active minutes.
+    - Separation of Concerns: Kafka (ingestion), Spark (processing), Redis (caching), Cassandra (storage).
+    - API Gateway: Handles authentication, rate limiting, and traffic management.
+    - Monitoring Tools: Prometheus, Grafana, and ELK ensure visibility.
