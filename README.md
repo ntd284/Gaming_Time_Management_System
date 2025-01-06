@@ -65,7 +65,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 - **Raw Data:** Stores raw data in Cassandra for backup and historical analysis.
 
 <p align="center">
-  <img src="./images/2_1_Cassandra.png" alt="lal", width=500>
+  <img src="./images/2_1_Cassandra.png" alt="lal", width=800>
 </p>
 
 - **Transformation:**
