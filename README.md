@@ -149,3 +149,8 @@ The architecture captures, processes, and exposes gaming session data via an API
 </p>
 
 #### 3. Fetch API: [fetch_api](plugins/fetch_api.py)
+- Based on real-time data stored in Redis, the system exposes gaming session data via an API to enforce the rules in real-time with 2 endpoints:
+    - **Get total playing time for a user:** Returns the total playing time for a user within the time window.
+        - HTTP Request: `GET /total_playing_time/{user_id}`
+    - **Get specific playing time for a user and game:** Returns the specific playing time for a user and game within the time window.
+        - HTTP Request: `GET /specific_playing_time/{user_id}&{game_id}`
