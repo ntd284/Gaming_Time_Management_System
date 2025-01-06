@@ -4,26 +4,6 @@ from pyspark.sql.types import StructType, StructField, StringType, TimestampType
 from cassandra.cluster import Cluster
 from datetime import datetime
 import uuid
-
-# Constants
-KAFKA_TOPIC_NAME = "eventstream"
-KAFKA_BOOTSTRAP_SERVER = "localhost:9092,localhost:9093,localhost:9094"
-REDIS_HOST = "localhost"
-REDIS_PORT = "6379"
-CASSANDRA_HOST = "localhost"
-KEYSPACE = "spark_streams"
-TABLE = "created_users"
-CHECKPOINT_LOCATION = "/tmp/check_point"
-DATE_SAMPLE = "2024-07-17"
-
-# Schema
-event_schema = StructType([
-    StructField("user_id", StringType(), True),
-    StructField("role_id", StringType(), True),
-    StructField("game_id", StringType(), True),
-    StructField("event_time", TimestampType(), True)
-])
-
 def create_spark_session():
     return SparkSession.builder \
         .appName("KafkaStructuredStreaming") \
@@ -45,10 +25,20 @@ def read_kafka_stream(spark):
         .option("startingOffsets", "earliest") \
         .load()
 
-def transform_event_df(kafka_stream):
+def extract_data_from_kafka(kafka_stream):
+    event_schema = StructType([
+        StructField("user_id", StringType(), True),
+        StructField("role_id", StringType(), True),
+        StructField("game_id", StringType(), True),
+        StructField("event_time", TimestampType(), True)
+    ])
     event_df = kafka_stream.selectExpr("CAST(value AS STRING)") \
         .select(from_json(col("value"), event_schema).alias("data")) \
         .select("data.*")
+    
+    return event_df
+
+def agg_time_playing(event_df):
 
     timestamp_format = "yyyy-MM-dd'T'HH:mm:ss.SSS"
     dateformats = "yyyy-MM-dd'T'HH:mm:00"
@@ -56,12 +46,23 @@ def transform_event_df(kafka_stream):
     end_window = "yyyy-MM-dd'T'23:59:59XXX"
     date = "yyyy-MM-dd"
 
-    return event_df.withColumn("event_time", to_timestamp(col("event_time"), timestamp_format)) \
+    transformed_eventtime_df = event_df.withColumn("event_time", to_timestamp(col("event_time"), timestamp_format)) \
         .withColumn("event_time", date_format(col("event_time"), dateformats)) \
         .withColumn("time_start_window", date_format(col("event_time"), start_window)) \
         .withColumn("time_end_window", date_format(col("event_time"), end_window)) \
         .dropDuplicates() \
         .filter(date_format(col('event_time'), date) == DATE_SAMPLE)
+    
+
+    specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
+        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+
+    specific_time_df = specific_time_df.withColumn("compose_id", concat(col("user_id"), lit(":"), col("game_id")))
+
+    total_time_df = transformed_eventtime_df.groupBy("user_id", "time_start_window", "time_end_window") \
+        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+
+    return specific_time_df, total_time_df
 
 def create_cassandra_connection():
     try:
@@ -90,8 +91,6 @@ def create_table(session):
     """)
     print("Table created successfully")
 
-def generate_uuid():
-    return str(uuid.uuid4())
 
 def write_to_redis(batch_df, batch_id):
     batch_df.write \
@@ -109,10 +108,13 @@ def write_aggregate_to_redis(batch_df, batch_id):
         .mode("append") \
         .save()
 
+def generate_uuid():
+    return str(uuid.uuid4())
+
 def main():
     spark = create_spark_session()
     kafka_stream = read_kafka_stream(spark)
-    event_df = transform_event_df(kafka_stream)
+    event_df = extract_data_from_kafka(kafka_stream)
 
     uuid_udf = udf(generate_uuid, StringType())
     event_df = event_df.withColumn("id", uuid_udf())
@@ -122,35 +124,42 @@ def main():
         create_keyspace(session)
         create_table(session)
 
-    df_transformed = event_df
-    transformed_df = df_transformed.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
-        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+    specific_time_df, total_time_df = agg_time_playing(event_df)
 
-    compose_key = transformed_df.withColumn("compose_id", concat(col("user_id"), lit(":"), col("game_id")))
-
-    aggregates = df_transformed.groupBy("user_id", "time_start_window", "time_end_window") \
-        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
-
-    query_compose_key = compose_key.writeStream \
+    query_specific_time_df = specific_time_df.writeStream \
         .outputMode("update") \
         .foreachBatch(write_to_redis) \
+        .option("checkpointLocation", CHECKPOINT_LOCATION_SPECIFIC) \
         .start()
 
-    query_aggregate = aggregates.writeStream \
+    query_total_time_df = total_time_df.writeStream \
         .outputMode("update") \
         .foreachBatch(write_aggregate_to_redis) \
+        .option("checkpointLocation", CHECKPOINT_LOCATION_TOTAL) \
         .start()
 
     streaming_query = event_df.writeStream \
         .format("org.apache.spark.sql.cassandra") \
-        .option('checkpointLocation', CHECKPOINT_LOCATION) \
+        .option('checkpointLocation', CHECKPOINT_LOCATION_CASSANDRA) \
         .option('keyspace', KEYSPACE) \
         .option('table', TABLE) \
         .start()
 
-    query_compose_key.awaitTermination()
-    query_aggregate.awaitTermination()
+    query_specific_time_df.awaitTermination()
+    query_total_time_df.awaitTermination()
     streaming_query.awaitTermination()
 
 if __name__ == "__main__":
+
+    KAFKA_TOPIC_NAME = "eventstream"
+    KAFKA_BOOTSTRAP_SERVER = "localhost:9092,localhost:9093,localhost:9094"
+    REDIS_HOST = "localhost"
+    REDIS_PORT = "6379"
+    CASSANDRA_HOST = "localhost"
+    KEYSPACE = "spark_streams"
+    TABLE = "created_users"
+    CHECKPOINT_LOCATION_CASSANDRA = "/tmp/check_point/cassandra"
+    CHECKPOINT_LOCATION_SPECIFIC= "/tmp/check_point/specific_time"
+    CHECKPOINT_LOCATION_TOTAL = "/tmp/check_point/total_time"
+    DATE_SAMPLE = "2024-07-17"
     main()

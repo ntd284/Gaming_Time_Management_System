@@ -5,3 +5,4 @@ redis
 fastapi
 uvicorn
 cassandra-driver
+requests
