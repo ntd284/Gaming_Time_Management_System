@@ -33,6 +33,15 @@ The architecture captures, processes, and exposes gaming session data via an API
 - [Docker-compose](docker-compose.yaml): To run images of Kafka, Cassandra, Redis, and Spark, and create a network for them to communicate.
 - [requirements.txt](requirements.txt): Contains all the required libraries to run the project.
 
+
+### Installation for demo:
+
+1. Clone the repository:
+```
+git clone 
+```
+
+
 ### System Process:
 
 <p align="center">
@@ -181,3 +190,4 @@ The architecture captures, processes, and exposes gaming session data via an API
 # cronfile
 0 0 * * * python3 plugins/flushdb.py >> logs/cronjob.log 2>&1
 ```
+
