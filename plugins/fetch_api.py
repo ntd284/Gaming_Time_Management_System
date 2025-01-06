@@ -7,8 +7,6 @@ app = FastAPI()
 # Redis Connection
 redis_client = redis.StrictRedis(host='localhost', port=6379, db=0, decode_responses=True)
 
-
-
 @app.get("/user_playing_time")
 async def get_specific_playing_time(user_id: str, game_id: Optional[str] = None):
     print(game_id)
