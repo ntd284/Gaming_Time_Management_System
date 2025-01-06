@@ -71,6 +71,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 - **Transformation:**
     - **Transform format of the event_time** to the nearest minute (e.g., 2021-09-01T12:34:12.003 -> 2021-09-01 12:34:00).
     - **Calculate the period** of start and end of the time window for each event.
+    - **Drop duplicates** to prevent inflated results.
     - **Filter out events** that are not within the time window.
 ```
     timestamp_format = "yyyy-MM-dd'T'HH:mm:ss.SSS"
