@@ -34,14 +34,26 @@ The architecture captures, processes, and exposes gaming session data via an API
 - [requirements.txt](requirements.txt): Contains all the required libraries to run the project.
 
 
-### Installation for demo:
+### Installation for demo (On Linux):
 
 1. Clone the repository:
 ```
-git clone 
+git clone https://github.com/ntd284/Gaming_Time_Management_System.git
 ```
+2. Install Docker and Docker-compose (if not installed):
+```
+sudo ./installdocker.sh
+docker --version
+docker compose version
+```
+3. Run docker-compose to start Kafka, Cassandra, Redis, and Spark:
+```
+docker compose up -d
+```
+Check in Docker-desktop:
+![setting_docker](images/10_0_setting_docker.png)
 
-
+4.
 ### System Process:
 
 <p align="center">
