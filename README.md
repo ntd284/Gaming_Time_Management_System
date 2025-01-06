@@ -28,6 +28,11 @@ The architecture captures, processes, and exposes gaming session data via an API
     - The system calculates distinct active minutes per user across all games.
     - Duplicate or overlapping minutes are ignored to prevent inflated results.
     - Final playing time is the sum of unique active minutes within the time window.
+- **Load Assumption:**
+    - Active Daily Users: Up to 1 million users.
+    - Event Throughput: Around 2,000 events per user per day.
+    - API Traffic: Handles 100 requests per second on REST API endpoints.
+    - Performance SLA: 99th percentile latency under 500ms.
 
 ## Getting Started
 
