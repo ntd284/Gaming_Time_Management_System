@@ -147,3 +147,5 @@ The architecture captures, processes, and exposes gaming session data via an API
 <p align="center">
     <img src="./images/2_7_playingtime.png" alt="lal", width=500>
 </p>
+
+#### 3. Fetch API: [fetch_api](plugins/fetch_api.py)
