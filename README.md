@@ -56,10 +56,10 @@ The architecture captures, processes, and exposes gaming session data via an API
 - **Event Schema:** The schema of the event data is as follows:
 ```
 [{
-    "user_id": "user_1", //Unique identifier of the user.
-    "role_id": "role_1", //Unique identifier of the role.
-    "game_id": "game_1", //Unique identifier of the game.
-    "event_time": "2021-09-01T12:34:12.003" //Timestamp of the event.
+    "user_id": "String",        //Unique identifier of the user.
+    "role_id": "String",        //Unique identifier of the role.
+    "game_id": "String",        //Unique identifier of the game.
+    "event_time": "datetime"    //Timestamp of the event.
 }]
 ```
 - **Raw Data:** Stores raw data in Cassandra for backup and historical analysis.
