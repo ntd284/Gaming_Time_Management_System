@@ -36,7 +36,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 ### System Process:
 
 <p align="center">
-  <img src="./images/2_0_processdata.png" alt="lal">
+  <img src="./images/2_0_processdatas.png" alt="lal">
 </p>
 
 #### 1. Data Ingestion (Kafka Producer & ZooKeeper): [produce_kafka](plugins/produce_kafka.py)
@@ -149,6 +149,11 @@ The architecture captures, processes, and exposes gaming session data via an API
 </p>
 
 #### 3. Fetch API: [Fetch_API](plugins/fetch_api.py)
+
+<p align="center">
+    <img src="./images/3_0_0_process_fetch_data.png" alt="lal", width=800>
+</p>
+
 - Based on real-time data stored in Redis, the system exposes gaming session data via an API to enforce the rules in real-time with 2 endpoints:
     - **Get total playing time for a user:** Returns the total playing time for a user within the time window.
         - HTTP Request: `GET /total_playing_time/user_id={user_id}`
@@ -159,7 +164,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 
     - **Get specific playing time for a user and game:** Returns the specific playing time for a user and game within the time window.
         - HTTP Request: `GET /specific_playing_time/user_id={user_id}&game_id={game_id}`
-        
+
         <p align="center">
             <img src="./images/3_1_specificplayingtime.png" alt="lal", width=500>
         </p>
