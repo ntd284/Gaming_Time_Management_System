@@ -168,3 +168,12 @@ The architecture captures, processes, and exposes gaming session data via an API
         <p align="center">
             <img src="./images/3_1_specificplayingtime.png" alt="lal", width=500>
         </p>
+
+#### 4. Reset per day: [cronjob](cronfile) and [flushdb](plugins/flushdb.py)
+
+- At the beginning of a new day at 00:00 AM, the system resets the gaming time for all users with cronjob and flushdb.
+
+```
+# cronfile
+0 0 * * * python3 plugins/flushdb.py >> logs/cronjob.log 2>&1
+```
