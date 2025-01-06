@@ -26,5 +26,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 ### Project files:
 
-- `docker-compose.yml`: Contains the configuration for the services.
-- `requirements.txt`: Contains the required Python packages.
+- [Fetch and produce events](plugins/produce_kafka.py): Fetches latest events from the API and produces them to the Consumer in message queue using **Kafka**.
+- [Consume events](plugins/spark_streaming.py): Consumes events from the message queue, processes them with Spark Streaming, and stores raw data in **Cassandra** and processed data in **Redis** for real-time access.
+- [FetchAPi](plugins/plugins/fetch_api.py): Clients want to capture, process, and expose gaming session data via an API to enforce the rules in real-time using **FastAPI**. 
+- Reset per day: Using [cronjob][cronfile] and [flushdb][plugins/flushdb.py] Resets the gaming time for all user at the beginning of a new day at 00:00 AM
