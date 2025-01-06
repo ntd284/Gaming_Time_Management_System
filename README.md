@@ -44,7 +44,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 - Fetches the latest action events from the [HTTP Link](https://github.com/ntd284/VNG-Assignment/raw/refs/heads/main/files/sample_file.json) (sample action events created by **AI**)
 
 <p align="center">
-  <img src="./images/1_1_sample.png" alt="lal", width=500>
+  <img src="./images/1_1_samples.png" alt="lal", width=500>
 </p>
 
 - Produces the events to the Kafka topic `eventstream`.
