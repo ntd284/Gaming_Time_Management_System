@@ -144,18 +144,18 @@ GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_
     - **Drop duplicates** to prevent inflated results.
     - **Filter out events** that are not within the time window.
 ```
-    timestamp_format = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    dateformats = "yyyy-MM-dd'T'HH:mm:00"
-    start_window = "yyyy-MM-dd'T'00:00:ssXXX"
-    end_window = "yyyy-MM-dd'T'23:59:59XXX"
-    date = "yyyy-MM-dd"
+timestamp_format = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+dateformats = "yyyy-MM-dd'T'HH:mm:00"
+start_window = "yyyy-MM-dd'T'00:00:ssXXX"
+end_window = "yyyy-MM-dd'T'23:59:59XXX"
+date = "yyyy-MM-dd"
 
-    transformed_eventtime_df = event_df.withColumn("event_time", to_timestamp(col("event_time"), timestamp_format)) \
-        .withColumn("event_time", date_format(col("event_time"), dateformats)) \
-        .withColumn("time_start_window", date_format(col("event_time"), start_window)) \
-        .withColumn("time_end_window", date_format(col("event_time"), end_window)) \
-        .dropDuplicates() \
-        .filter(date_format(col('event_time'), date) == DATE_SAMPLE)
+transformed_eventtime_df = event_df.withColumn("event_time", to_timestamp(col("event_time"), timestamp_format)) \
+    .withColumn("event_time", date_format(col("event_time"), dateformats)) \
+    .withColumn("time_start_window", date_format(col("event_time"), start_window)) \
+    .withColumn("time_end_window", date_format(col("event_time"), end_window)) \
+    .dropDuplicates() \
+    .filter(date_format(col('event_time'), date) == DATE_SAMPLE)
 ```
 **Output:**
 <p align="center">
@@ -169,8 +169,8 @@ GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_
 ```
 # using `groupBy` and `approx_count_distinct` to deduplicate the same events then Count of playing minutes for each user and game
 
-    specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
-        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
+    .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
 ```
 **Output:**
 <p align="center">
@@ -183,8 +183,8 @@ GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_
 ```
 # using `groupBy` and `approx_count_distinct` to deduplicate the same events then Count of playing minutes for each user
 
-    total_time_df = transformed_eventtime_df.groupBy("user_id", "time_start_window", "time_end_window") \
-        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+total_time_df = transformed_eventtime_df.groupBy("user_id", "time_start_window", "time_end_window") \
+    .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
 ```
 **Output:**
 <p align="center">
@@ -195,17 +195,17 @@ GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_
     - Redis is an in-memory data structure store that can be used as a database, cache, and message broker.
     - The processed data is stored in Redis with the key as the user_id and the value as the total playing time.
 ```
-    query_specific_time_df = specific_time_df.writeStream \
-        .outputMode("update") \
-        .foreachBatch(write_to_redis) \
-        .option("checkpointLocation", CHECKPOINT_LOCATION_SPECIFIC) \
-        .start()
+query_specific_time_df = specific_time_df.writeStream \
+    .outputMode("update") \
+    .foreachBatch(write_to_redis) \
+    .option("checkpointLocation", CHECKPOINT_LOCATION_SPECIFIC) \
+    .start()
 
-    query_total_time_df = total_time_df.writeStream \
-        .outputMode("update") \
-        .foreachBatch(write_aggregate_to_redis) \
-        .option("checkpointLocation", CHECKPOINT_LOCATION_TOTAL) \
-        .start()
+query_total_time_df = total_time_df.writeStream \
+    .outputMode("update") \
+    .foreachBatch(write_aggregate_to_redis) \
+    .option("checkpointLocation", CHECKPOINT_LOCATION_TOTAL) \
+    .start()
 ```
 **Output:**
 - List of all events saved in **Redis**
