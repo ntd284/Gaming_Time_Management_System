@@ -108,3 +108,35 @@ The architecture captures, processes, and exposes gaming session data via an API
 <p align="center">
   <img src="./images/2_4_totaltime.png" alt="lal", width=500>
 </p>
+
+- **Store processed data in Redis:** The system stores the processed data in Redis for real-time access.
+    - Redis is an in-memory data structure store that can be used as a database, cache, and message broker.
+    - The processed data is stored in Redis with the key as the user_id and the value as the total playing time.
+```
+    query_specific_time_df = specific_time_df.writeStream \
+        .outputMode("update") \
+        .foreachBatch(write_to_redis) \
+        .option("checkpointLocation", CHECKPOINT_LOCATION_SPECIFIC) \
+        .start()
+
+    query_total_time_df = total_time_df.writeStream \
+        .outputMode("update") \
+        .foreachBatch(write_aggregate_to_redis) \
+        .option("checkpointLocation", CHECKPOINT_LOCATION_TOTAL) \
+        .start()
+```
+**Output:**
+- List of all events in Redis
+<p align="center">
+    <img src="./images/2_5_total_events.png" alt="lal", width=500>
+</p>
+
+- users with their total playing time
+<p align="center">
+    <img src="./images/2_6_totalplayingtime.png" alt="lal", width=500>
+</p>
+
+- Users and games with their specific playing time
+<p align="center">
+    <img src="./images/2_7_playingtime.png" alt="lal", width=500>
+</p>
