@@ -36,7 +36,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 ### System Process:
 
 <p align="center">
-  <img src="./images/0_architecture.png" alt="lal">
+  <img src="./images/0_0_architecture.png" alt="lal">
 </p>
 
 #### 1. Data Ingestion (Kafka Producer & ZooKeeper): [produce_kafka](plugins/produce_kafka.py)
