@@ -32,3 +32,10 @@ The architecture captures, processes, and exposes gaming session data via an API
 - Reset per day: Using [cronjob](cronfile) and [flushdb](plugins/flushdb.py) Resets the gaming time for all user at the beginning of a new day at 00:00 AM
 - [Docker-compose](docker-compose.yaml): To run images of Kafka, Cassandra, Redis, and Spark, and create a network for them to communicate.
 - [requirements.txt](requirements.txt): Contains all the required libraries to run the project.
+
+### System Process:
+
+#### 1. Produce Events: [produce_kafka](plugins/produce_kafka.py)
+![1_produceevents](images/1_produceevents.png.png)
+- Fetches the latest action events from the HTTP API (using simulated action events created by AI attach in [file](https://github.com/ntd284/VNG-Assignment/raw/refs/heads/main/files/sample_file.json))
+- Produces the events to the Kafka topic `eventstream`.
