@@ -27,7 +27,7 @@ The architecture captures, processes, and exposes gaming session data via an API
     - API Traffic: Handles 100 requests per second on REST API endpoints.
     - Performance SLA: 99th percentile latency under 500ms.
 
-### The reason for choosing this architecture is to ensure:
+### The reason for choosing this architecture is to address the following requirements:
 - **Horizontal Scalability:** **Kafka**, **Spark**, **Cassandra**, and **Redis** can be scaled horizontally to handle large volumes of data.
 - **Data Durability:** **Cassandra** provides high availability and durability for raw data storage.
 - **High Availability:** **Redis** provides fast read access to processed data for real-time enforcement.
