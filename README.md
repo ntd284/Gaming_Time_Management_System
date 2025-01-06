@@ -35,13 +35,11 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 ### System Process:
 
-
+<p align="center">
+  <img src="./images/0_architecture.png" alt="lal">
+</p>
 
 #### 1. Data Ingestion (Kafka Producer & ZooKeeper): [produce_kafka](plugins/produce_kafka.py)
-
-<p align="center">
-  <img src="./images/2_0_processdatas.png" alt="lal">
-</p>
 
 - **Source:** Fetches the latest action events from the [HTTP Link](https://github.com/ntd284/VNG-Assignment/raw/refs/heads/main/files/sample_file.json) (sample action events created by **AI**)
 
@@ -53,6 +51,10 @@ The architecture captures, processes, and exposes gaming session data via an API
 - **Coordinating Service:** ZooKeeper manages the Kafka cluster state and configuration.
 
 #### 2. Consume and Process Events: [spark_streaming](plugins/spark_streaming.py)
+
+<p align="center">
+  <img src="./images/2_0_processdatas.png" alt="lal">
+</p>
 
 - **Consumer:** Consumes events from the message queue using Spark Streaming.
 - **Event Schema:** The schema of the event data is as follows:
