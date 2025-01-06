@@ -38,7 +38,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 #### 1. Produce Events: [produce_kafka](plugins/produce_kafka.py)
 
 <p align="center">
-  <img src="./images/1_produceevents.png" alt="lal" width='300'>
+  <img src="./images/1_produceevents.png" alt="lal">
 </p>
 
 - Fetches the latest action events from the [HTTP Link](https://github.com/ntd284/VNG-Assignment/raw/refs/heads/main/files/sample_file.json) (sample action events created by **AI**)
