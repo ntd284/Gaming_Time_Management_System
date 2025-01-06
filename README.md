@@ -86,8 +86,8 @@ The architecture captures, processes, and exposes gaming session data via an API
 </p>
 
 - **Calculated specific active minutes:** The system calculates distinct active minutes per user across all games based on the event data with logic:
-        - Duplicate or overlapping minutes are ignored to prevent inflated results.
-        - Final playing time is the sum of unique active minutes within the time window.
+    - Duplicate or overlapping minutes are ignored to prevent inflated results.
+    - Final playing time is the sum of unique active minutes within the time window.
 ```
     specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
         .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
