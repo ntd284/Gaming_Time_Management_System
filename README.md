@@ -52,3 +52,50 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 #### 2. Consume and Process Events: [spark_streaming](plugins/spark_streaming.py)
 
+- **Consumer:** Consumes events from the message queue using Spark Streaming.
+- **Event Schema:** The schema of the event data is as follows:
+    - `user_id`: Unique identifier of the user.
+    - `game_id`: Unique identifier of the game.
+    - `event_time`: Timestamp of the event.
+    - **Raw Data:** Stores raw data in Cassandra for backup and historical analysis.
+<p align="center">
+  <img src="./images/2_1_Cassandra.png" alt="lal", width=500>
+</p>
+
+- **Transformation:**
+    - **Transform format of the event_time** to the nearest minute (e.g., 2021-09-01T12:34:12.003 -> 2021-09-01 12:34:00).
+    - **Calculate the period** of start and end of the time window for each event.
+    - **Filter out events** that are not within the time window.
+```
+    timestamp_format = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    dateformats = "yyyy-MM-dd'T'HH:mm:00"
+    start_window = "yyyy-MM-dd'T'00:00:ssXXX"
+    end_window = "yyyy-MM-dd'T'23:59:59XXX"
+    date = "yyyy-MM-dd"
+
+    transformed_eventtime_df = event_df.withColumn("event_time", to_timestamp(col("event_time"), timestamp_format)) \
+        .withColumn("event_time", date_format(col("event_time"), dateformats)) \
+        .withColumn("time_start_window", date_format(col("event_time"), start_window)) \
+        .withColumn("time_end_window", date_format(col("event_time"), end_window)) \
+        .dropDuplicates() \
+        .filter(date_format(col('event_time'), date) == DATE_SAMPLE)
+```
+**Output:**
+<p align="center">
+  <img src="./images/2_2_formatdate.png" alt="lal", width=500>
+</p>
+
+   - **Calculated specific active minutes:** The system calculates distinct active minutes per user across all games based on the event data with logic:
+        - Duplicate or overlapping minutes are ignored to prevent inflated results.
+        - Final playing time is the sum of unique active minutes within the time window.
+```
+    specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
+        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+
+    specific_time_df = specific_time_df.withColumn("compose_id", concat(col("user_id"), lit(":"), col("game_id")))
+```
+**Output:**
+<p align="center">
+  <img src="./images/2_3_specifictime.png" alt="lal", width=500>
+</p>
+    
