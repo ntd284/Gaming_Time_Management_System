@@ -91,8 +91,6 @@ The architecture captures, processes, and exposes gaming session data via an API
 ```
     specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
         .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
-
-    specific_time_df = specific_time_df.withColumn("compose_id", concat(col("user_id"), lit(":"), col("game_id")))
 ```
 **Output:**
 <p align="center">
