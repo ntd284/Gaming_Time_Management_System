@@ -49,7 +49,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 - Produces the events to the Kafka topic `eventstream`.
 
-#### 2. Consume Events: [spark_streaming](plugins/spark_streaming.py)
+#### 2. Consume and Process Events: [spark_streaming](plugins/spark_streaming.py)
 
 <p align="center">
   <img src="./images/2_processdata.png" alt="lal">
