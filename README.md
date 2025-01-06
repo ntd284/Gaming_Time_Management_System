@@ -48,7 +48,7 @@ The architecture captures, processes, and exposes gaming session data via an API
 </p>
 
 - **Message Queue:** Kafka hadles message queueing for real-time processing with topic `eventstream`.
-- **Coordinating Service: **ZooKeeper manages the Kafka cluster state and configuration.
+- **Coordinating Service:** ZooKeeper manages the Kafka cluster state and configuration.
 
 #### 2. Consume and Process Events: [spark_streaming](plugins/spark_streaming.py)
 
