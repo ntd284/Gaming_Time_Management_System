@@ -89,17 +89,6 @@ services:
     volumes:
       - kafka3_data:/var/lib/kafka/data
 
-  clickhouse:
-    image: docker.io/bitnami/clickhouse:24
-    environment:
-      - ALLOW_EMPTY_PASSWORD=yes
-    ports:
-      - '8123:8123'
-    volumes:
-      - clickhouse_data:/bitnami/clickhouse
-    networks:
-      - vng-assign-network
-
   spark-master:
     image: bitnami/spark:latest
     command: bin/spark-class org.apache.spark.deploy.master.Master

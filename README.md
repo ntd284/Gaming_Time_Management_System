@@ -36,9 +36,10 @@ The architecture captures, processes, and exposes gaming session data via an API
 
 ### Installation for demo (On Linux):
 
-1. Clone the repository:
+1. Clone the repository and access to file:
 ```
 git clone https://github.com/ntd284/Gaming_Time_Management_System.git
+cd Gaming_Time_Management_System
 ```
 2. Install Docker and Docker-compose (if not installed):
 ```
@@ -78,8 +79,8 @@ HGETALL specific_playing_time:{user_id}:{game_id}
 ```
 8. Test the API using postman or browser:
 ```
-Total playing time: GET http://localhost:8000/total_playing_time/user_id={user_id}
-Specific playtin time: GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_id}
+GET http://localhost:8000/total_playing_time/user_id={user_id}                          #Total playing time
+GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_id}     #Specific playing time
 ```
 
 ### System Process:
