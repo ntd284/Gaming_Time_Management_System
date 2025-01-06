@@ -261,4 +261,4 @@ query_total_time_df = total_time_df.writeStream \
 - API Gateway: Handles authentication, rate limiting, and traffic management.
 - Monitoring Tools: Prometheus, Grafana, and ELK ensure visibility.
 ---
-This is the end of my description with this project. Thank you for reading. If you have any questions, please feel free to ask me on linkedin: [Nguyen Trong Duong](https://www.linkedin.com/in/ntd284/)
+This is the end of my description with this project. Thank you for reading. If you have any questions, please feel free to ask me on linkedin: [Nguyen Tuan Duong](https://www.linkedin.com/in/tuanduong284/)
