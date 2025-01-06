@@ -36,6 +36,6 @@ The architecture captures, processes, and exposes gaming session data via an API
 ### System Process:
 
 #### 1. Produce Events: [produce_kafka](plugins/produce_kafka.py)
-![1_produceevents](images/1_produceevents.png.png)
+![1_produceevents](images/1_produceevents.png)
 - Fetches the latest action events from the HTTP API (using simulated action events created by AI attach in [file](https://github.com/ntd284/VNG-Assignment/raw/refs/heads/main/files/sample_file.json))
 - Produces the events to the Kafka topic `eventstream`.
