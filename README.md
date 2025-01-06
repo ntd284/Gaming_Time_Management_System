@@ -96,4 +96,13 @@ The architecture captures, processes, and exposes gaming session data via an API
 <p align="center">
   <img src="./images/2_3_specifictime.png" alt="lal", width=500>
 </p>
-    
+    - **Calculate the total playing time:** The system calculates the total playing time across all games for each user within the time window.
+        - The total playing time is the sum of unique active minutes across all games.
+```
+    total_time_df = transformed_eventtime_df.groupBy("user_id", "time_start_window", "time_end_window") \
+        .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
+```
+**Output:**
+<p align="center">
+  <img src="./images/2_4_totaltime.png" alt="lal", width=500>
+</p>
