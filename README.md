@@ -53,7 +53,35 @@ docker compose up -d
 Check in Docker-desktop:
 ![setting_docker](images/10_0_setting_docker.png)
 
-4.
+4. Install the required libraries:
+```
+pip install -r requirements.txt
+```
+5. Run the project:
+```
+cd plugins
+python3 produce_kafka.py # Fetch and produce events
+python3 spark_streaming.py # Consume and process events
+uvicorn fetch_api:app # Activate API app
+```
+6. Check raw data in Cassandra database:
+```
+docker exec -it cassandra cqlsh -u cassandra -p cassandra localhost 9042
+SELECT * FROM spark_streams.created_users;
+```
+7. Check processed data in Redis:
+```
+docker exec -it redis redis-cli
+KEYS *
+HGETALL total_playing_time:{user_id}
+HGETALL specific_playing_time:{user_id}:{game_id}
+```
+8. Test the API using postman or browser:
+```
+Total playing time: GET http://localhost:8000/total_playing_time/user_id={user_id}
+Specific playtin time: GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_id}
+```
+
 ### System Process:
 
 <p align="center">
