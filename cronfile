@@ -1,2 +1,2 @@
 # Run a Python script every day at 00:00 AM to clean redis database
-0 0 * * * python3 plugins/flushdb.py >> logs/cronjob.log 2>&1
+0 12 * * * python3 plugins/flushdb.py >> logs/cronjob.log 2>&1
