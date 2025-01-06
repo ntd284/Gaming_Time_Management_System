@@ -151,9 +151,12 @@ GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_
 </p>
 
 - **Calculated specific active minutes:** The system calculates distinct active minutes per user across all games based on the event data with logic:
-    - Duplicate or overlapping minutes are ignored to prevent inflated results.
+    - Duplicate or overlapping minutes are ignored to prevent inflated results 
     - Final playing time is the sum of unique active minutes within the time window.
+
 ```
+# using `groupBy` and `approx_count_distinct` to deduplicate the same events then Count of playing minutes for each user and game
+
     specific_time_df = transformed_eventtime_df.groupBy("user_id", "game_id", "time_start_window", "time_end_window") \
         .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
 ```
@@ -166,6 +169,8 @@ GET http://localhost:8000/specific_playing_time/user_id={user_id}&game_id={game_
     - The total playing time is the sum of unique active minutes across all games.
 
 ```
+# using `groupBy` and `approx_count_distinct` to deduplicate the same events then Count of playing minutes for each user
+
     total_time_df = transformed_eventtime_df.groupBy("user_id", "time_start_window", "time_end_window") \
         .agg(approx_count_distinct(struct("user_id", "game_id", "event_time")).alias("playing_time_minutes"))
 ```
